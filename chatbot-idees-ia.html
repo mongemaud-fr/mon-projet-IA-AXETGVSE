@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovation IA — Déposez votre idée</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Instrument+Mono&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0d0f14;
+  --ink2:#181c27;
+  --ink3:#1e2436;
+  --rule:rgba(255,255,255,0.07);
+  --rule2:rgba(255,255,255,0.12);
+  --sky:#4fa3e0;
+  --jade:#30b888;
+  --amber:#f2a93b;
+  --rose:#e05c6a;
+  --text:#dce6f5;
+  --text2:#8898bb;
+  --text3:#4f5f80;
+  --user:#13233f;
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--ink);color:var(--text);
+  font-family:'DM Sans',sans-serif;font-weight:400;
+  line-height:1.6;min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── NOISE LAYER ─── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:.5;
+}
+
+/* ─── LANDING ─── */
+#landing{
+  display:flex;flex-direction:column;align-items:center;
+  min-height:100vh;padding:60px 24px 80px;
+  position:relative;overflow:hidden;text-align:center;
+}
+.bg-orb{
+  position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);
+}
+.orb1{width:500px;height:500px;top:-150px;left:50%;transform:translateX(-60%);background:rgba(79,163,224,0.09);}
+.orb2{width:400px;height:400px;bottom:-80px;right:-80px;background:rgba(48,184,136,0.07);}
+.orb3{width:300px;height:300px;bottom:20px;left:-60px;background:rgba(242,169,59,0.06);}
+
+.l-eyebrow{
+  font-family:'Instrument Mono',monospace;font-size:11px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--jade);
+  margin-bottom:28px;
+  display:flex;align-items:center;gap:10px;
+  position:relative;z-index:1;
+}
+.l-eyebrow::before,.l-eyebrow::after{
+  content:'';width:32px;height:1px;background:var(--jade);opacity:.5;
+}
+.l-h1{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(2.8rem,7vw,5.5rem);
+  line-height:1.05;letter-spacing:-1.5px;
+  font-weight:400;
+  color:var(--text);
+  margin-bottom:24px;
+  position:relative;z-index:1;
+  max-width:720px;
+}
+.l-h1 em{
+  font-style:italic;
+  background:linear-gradient(100deg,var(--sky),var(--jade));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.l-body{
+  font-size:1.1rem;color:var(--text2);
+  max-width:480px;line-height:1.75;
+  margin-bottom:44px;
+  position:relative;z-index:1;
+}
+.l-cta{
+  display:inline-flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,var(--sky) 0%,var(--jade) 100%);
+  color:white;font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:600;
+  padding:17px 38px;border-radius:60px;
+  border:none;cursor:pointer;position:relative;z-index:1;
+  transition:transform .2s,box-shadow .2s;
+  letter-spacing:.2px;
+}
+.l-cta:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(79,163,224,0.3);}
+.l-cta:active{transform:translateY(0);}
+.l-cta svg{transition:transform .2s;}
+.l-cta:hover svg{transform:translateX(4px);}
+
+.l-tags{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  margin-top:52px;position:relative;z-index:1;
+}
+.l-tag{
+  background:rgba(255,255,255,0.04);border:1px solid var(--rule2);
+  color:var(--text2);font-size:12.5px;padding:7px 16px;border-radius:30px;
+  display:flex;align-items:center;gap:7px;
+}
+.tag-dot{width:6px;height:6px;border-radius:50%;}
+
+/* ─── CHAT ─── */
+#chatscreen{
+  display:none;flex-direction:column;
+  min-height:100vh;max-width:740px;
+  margin:0 auto;position:relative;z-index:1;
+}
+.topbar{
+  position:sticky;top:0;z-index:20;
+  background:rgba(13,15,20,.92);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--rule);
+  padding:14px 24px;
+  display:flex;align-items:center;gap:14px;
+}
+.t-av{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--sky),var(--jade));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Serif Display',serif;font-size:16px;color:white;
+  position:relative;
+}
+.t-av::after{
+  content:'';position:absolute;bottom:1px;right:1px;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--jade);border:2px solid var(--ink);
+}
+.t-name{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text);}
+.t-status{font-size:11px;color:var(--jade);font-weight:500;}
+.t-prog{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.prog-txt{font-family:'Instrument Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.5px;}
+.prog-rail{width:90px;height:3px;background:var(--rule);border-radius:3px;overflow:hidden;}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--sky),var(--jade));border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
+
+#messages{
+  flex:1;padding:32px 24px;
+  display:flex;flex-direction:column;gap:20px;
+}
+.msg{display:flex;gap:11px;animation:rise .32s cubic-bezier(.4,0,.2,1);}
+@keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.msg.user{flex-direction:row-reverse;}
+.av{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Serif Display',serif;font-size:13px;
+}
+.av.b{background:linear-gradient(135deg,var(--sky),var(--jade));color:white;}
+.av.u{background:rgba(79,163,224,0.12);border:1px solid rgba(79,163,224,0.2);color:var(--sky);}
+.bbl{
+  max-width:76%;padding:14px 18px;border-radius:20px;
+  font-size:14.5px;line-height:1.72;color:var(--text);
+}
+.msg.bot .bbl{
+  background:var(--ink3);border:1px solid var(--rule);
+  border-bottom-left-radius:5px;
+}
+.msg.user .bbl{
+  background:var(--user);border:1px solid rgba(79,163,224,0.18);
+  border-bottom-right-radius:5px;
+}
+.bbl strong{color:var(--amber);font-weight:500;}
+
+.qz{padding:4px 24px 14px;display:flex;flex-wrap:wrap;gap:8px;}
+.qb{
+  background:transparent;border:1px solid var(--rule2);
+  color:var(--text2);font-size:13px;padding:8px 16px;
+  border-radius:30px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all .16s;
+}
+.qb:hover{background:rgba(79,163,224,0.1);border-color:rgba(79,163,224,0.35);color:var(--text);transform:translateY(-1px);}
+
+.ibar{
+  position:sticky;bottom:0;
+  background:rgba(13,15,20,.92);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--rule);
+  padding:14px 24px;display:flex;gap:10px;align-items:flex-end;
+  z-index:20;
+}
+#inp{
+  flex:1;background:var(--ink3);border:1px solid var(--rule);
+  border-radius:14px;padding:11px 16px;
+  color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;
+  outline:none;resize:none;min-height:44px;max-height:120px;line-height:1.5;
+  transition:border-color .2s;
+}
+#inp:focus{border-color:rgba(79,163,224,0.4);}
+#inp::placeholder{color:var(--text3);}
+#snd{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--sky),var(--jade));
+  border:none;cursor:pointer;color:white;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .15s,box-shadow .15s;
+}
+#snd:hover{transform:scale(1.07);box-shadow:0 6px 18px rgba(79,163,224,0.3);}
+#snd:active{transform:scale(.96);}
+
+/* ─── typing ─── */
+.tdot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--text3);margin:0 2px;
+  animation:tp 1.2s infinite;
+}
+.tdot:nth-child(2){animation-delay:.2s;}
+.tdot:nth-child(3){animation-delay:.4s;}
+@keyframes tp{0%,80%,100%{opacity:.3;transform:scale(.75);}40%{opacity:1;transform:scale(1);}}
+
+/* ─── FICHE ─── */
+.fiche{
+  background:var(--ink2);
+  border:1px solid rgba(48,184,136,0.3);
+  border-radius:18px;padding:22px;
+  font-size:13.5px;max-width:94%;
+}
+.fiche-hd{
+  font-family:'DM Serif Display',serif;font-size:17px;
+  color:var(--jade);margin-bottom:18px;letter-spacing:.2px;
+  display:flex;align-items:center;gap:8px;
+}
+.fiche-hd::before{
+  content:'';width:18px;height:18px;border-radius:4px;
+  background:rgba(48,184,136,0.2);border:1px solid rgba(48,184,136,0.4);flex-shrink:0;
+}
+.fr{
+  display:flex;gap:12px;padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.fr:last-of-type{border-bottom:none;}
+.fl{
+  font-family:'Instrument Mono',monospace;
+  color:var(--text3);font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;
+  min-width:120px;padding-top:2px;flex-shrink:0;
+}
+.fv{color:var(--text);font-size:13.5px;flex:1;line-height:1.6;}
+.fact{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+.fab{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  padding:7px 16px;border-radius:8px;cursor:pointer;border:none;
+  transition:all .15s;letter-spacing:.1px;
+}
+.fab.cp{background:rgba(48,184,136,0.13);color:var(--jade);}
+.fab.cp:hover{background:rgba(48,184,136,0.25);}
+.fab.nw{background:rgba(79,163,224,0.13);color:var(--sky);}
+.fab.nw:hover{background:rgba(79,163,224,0.25);}
+
+/* ─── ADMIN ─── */
+#adminscreen{display:none;min-height:100vh;padding:36px 28px;max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.adm-hd{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:36px;flex-wrap:wrap;gap:16px;
+}
+.adm-title{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--text);}
+.adm-title span{color:var(--sky);}
+.adm-actions{display:flex;gap:9px;flex-wrap:wrap;}
+.abtn{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  padding:9px 18px;border-radius:10px;cursor:pointer;border:none;transition:all .15s;
+}
+.abtn.ex{background:rgba(48,184,136,0.13);color:var(--jade);}
+.abtn.ex:hover{background:rgba(48,184,136,0.24);}
+.abtn.cl{background:rgba(224,92,106,0.13);color:var(--rose);}
+.abtn.cl:hover{background:rgba(224,92,106,0.24);}
+.abtn.bk{background:rgba(255,255,255,0.06);color:var(--text2);}
+.abtn.bk:hover{background:rgba(255,255,255,0.1);}
+.a-grid{display:flex;flex-direction:column;gap:16px;}
+.a-card{
+  background:var(--ink2);border:1px solid var(--rule);
+  border-radius:14px;padding:20px;
+  border-left:3px solid var(--sky);
+}
+.a-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px;}
+.a-card-ttl{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);}
+.a-card-meta{font-family:'Instrument Mono',monospace;font-size:10px;color:var(--text3);margin-top:3px;letter-spacing:.3px;}
+.pbadge{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:600;white-space:nowrap;flex-shrink:0;}
+.a-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;font-size:13px;color:var(--text);}
+.a-field-lbl{font-family:'Instrument Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.7px;text-transform:uppercase;margin-bottom:3px;}
+.empty{text-align:center;padding:72px 20px;color:var(--text3);}
+.empty-icon{font-size:3rem;margin-bottom:16px;opacity:.3;}
+
+/* ─── QR ─── */
+#qrscreen{
+  display:none;position:fixed;inset:0;z-index:100;
+  background:var(--ink);flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px 24px;
+  overflow:hidden;
+}
+#qrscreen::before{
+  content:'';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:700px;height:700px;
+  background:radial-gradient(ellipse,rgba(79,163,224,0.1) 0%,transparent 65%);
+  pointer-events:none;
+}
+.qr-ey{
+  font-family:'Instrument Mono',monospace;font-size:11px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--jade);margin-bottom:20px;
+  position:relative;z-index:1;
+}
+.qr-h{
+  font-family:'DM Serif Display',serif;font-size:clamp(2rem,5vw,3.5rem);
+  font-weight:400;color:var(--text);line-height:1.1;
+  margin-bottom:12px;position:relative;z-index:1;letter-spacing:-1px;
+}
+.qr-h em{font-style:italic;color:var(--sky);}
+.qr-sub{font-size:1rem;color:var(--text2);margin-bottom:40px;max-width:440px;line-height:1.7;position:relative;z-index:1;}
+.qr-wrap{
+  background:white;border-radius:22px;padding:22px;
+  box-shadow:0 0 80px rgba(79,163,224,0.2),0 0 120px rgba(48,184,136,0.1);
+  position:relative;z-index:1;margin-bottom:28px;
+}
+#qrcode canvas,#qrcode img{display:block;}
+.qr-url-txt{
+  font-family:'Instrument Mono',monospace;font-size:12px;
+  color:var(--text3);margin-bottom:36px;
+  position:relative;z-index:1;
+  word-break:break-all;max-width:500px;
+}
+.qr-steps{
+  display:flex;gap:16px;flex-wrap:wrap;justify-content:center;
+  position:relative;z-index:1;
+}
+.qrs{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--rule2);
+  border-radius:12px;padding:11px 16px;
+  font-size:12.5px;color:var(--text2);
+}
+.qrs-n{
+  width:22px;height:22px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--sky),var(--jade));
+  color:white;font-family:'Instrument Mono',monospace;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.qr-x{
+  position:fixed;top:24px;right:24px;
+  background:rgba(255,255,255,0.06);border:1px solid var(--rule);
+  color:var(--text2);width:42px;height:42px;border-radius:50%;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:all .15s;
+}
+.qr-x:hover{background:rgba(255,255,255,0.12);color:var(--text);}
+
+/* admin toggle */
+.adm-trig{
+  position:fixed;bottom:18px;right:18px;z-index:50;
+  background:rgba(255,255,255,0.04);border:1px solid var(--rule);
+  color:var(--text3);font-family:'Instrument Mono',monospace;
+  font-size:10px;letter-spacing:1.5px;padding:6px 12px;
+  border-radius:8px;cursor:pointer;transition:all .15s;
+}
+.adm-trig:hover{color:var(--text2);background:rgba(255,255,255,0.08);}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+  <div class="bg-orb orb3"></div>
+  <div class="l-eyebrow">Programme Innovation Groupe</div>
+  <h1 class="l-h1">Votre idée peut<br><em>transformer</em> le groupe</h1>
+  <p class="l-body">Partagez votre cas d'usage IA en quelques minutes. Les meilleures propositions seront sélectionnées et développées avec vous.</p>
+  <button class="l-cta" onclick="startChat()">
+    Déposer mon idée
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="l-tags">
+    <div class="l-tag"><span class="tag-dot" style="background:var(--jade)"></span> 5 minutes suffisent</div>
+    <div class="l-tag"><span class="tag-dot" style="background:var(--sky)"></span> Tous les départements</div>
+    <div class="l-tag"><span class="tag-dot" style="background:var(--amber)"></span> Jury de sélection</div>
+    <div class="l-tag"><span class="tag-dot" style="background:var(--rose)"></span> Idées confidentielles</div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="chatscreen">
+  <div class="topbar">
+    <div class="t-av">A</div>
+    <div>
+      <div class="t-name">Assistant Innovation IA</div>
+      <div class="t-status">En ligne · Collecte d'idées</div>
+    </div>
+    <div class="t-prog">
+      <span class="prog-txt" id="plbl">1 / 8</span>
+      <div class="prog-rail"><div class="prog-bar" id="pbar"></div></div>
+    </div>
+  </div>
+  <div id="messages"></div>
+  <div class="qz" id="qz"></div>
+  <div class="ibar">
+    <textarea id="inp" placeholder="Votre réponse…" rows="1"></textarea>
+    <button id="snd" aria-label="Envoyer">
+      <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M2 8.5h13M9.5 3l5.5 5.5-5.5 5.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminscreen">
+  <div class="adm-hd">
+    <div>
+      <div class="adm-title">Fiches collectées <span id="adm-cnt"></span></div>
+    </div>
+    <div class="adm-actions">
+      <button class="abtn ex" onclick="exportCSV()">↓ CSV</button>
+      <button class="abtn ex" onclick="exportJSON()">↓ JSON</button>
+      <button class="abtn cl" onclick="clearAll()">Vider</button>
+      <button class="abtn bk" onclick="showLanding()">← Accueil</button>
+    </div>
+  </div>
+  <div class="a-grid" id="agrid"></div>
+</div>
+
+<!-- QR -->
+<div id="qrscreen">
+  <button class="qr-x" onclick="hideQR()" aria-label="Fermer">✕</button>
+  <div class="qr-ey">Scannez pour participer</div>
+  <h2 class="qr-h">Déposez votre<br><em>idée IA</em></h2>
+  <p class="qr-sub">Ouvrez l'assistant sur votre smartphone et contribuez au programme innovation en 5 minutes.</p>
+  <div class="qr-wrap"><div id="qrcode"></div></div>
+  <p class="qr-url-txt" id="qrlbl"></p>
+  <div class="qr-steps">
+    <div class="qrs"><div class="qrs-n">1</div>Scannez le QR code</div>
+    <div class="qrs"><div class="qrs-n">2</div>Répondez aux questions</div>
+    <div class="qrs"><div class="qrs-n">3</div>Fiche générée & enregistrée</div>
+  </div>
+</div>
+
+<button class="adm-trig" onclick="showAdmin()">ADM</button>
+
+<script>
+const ST=[
+  {k:null,bot:"Bonjour et bienvenue ! 👋\n\nJe suis l'assistant de collecte d'idées IA de votre groupe — ravi de vous accueillir.\n\nNous souhaitons recueillir vos propositions de cas d'usage IA pour les soumettre à notre jury de sélection. Votre contribution est précieuse.\n\nPour commencer, pourriez-vous me donner votre <strong>prénom et votre direction ou département</strong> ?",q:[]},
+  {k:'identite',bot:"Merci ! Je suis ravi de vous accompagner.\n\nQuel est le <strong>titre de votre idée</strong> ? (un intitulé court et évocateur, comme un nom de projet)",q:[]},
+  {k:'titre',bot:"Excellent. Pouvez-vous décrire <strong>le problème ou la situation actuelle</strong> que vous souhaitez améliorer ?\n\nQu'est-ce qui prend trop de temps, génère des erreurs ou freine la performance aujourd'hui ?",q:["Tâches répétitives à automatiser","Analyse de données complexe","Traitement de documents","Relation client à améliorer","Processus décisionnel lent","Autre situation"]},
+  {k:'probleme',bot:"Très clair. Décrivez la <strong>solution IA envisagée</strong> : quelle capacité ou fonctionnalité IA imaginez-vous pour transformer cette situation ?",q:["Automatisation intelligente","Analyse prédictive","Génération de contenu","Classification / détection","Assistant conversationnel","Vision par ordinateur","Recherche dans les données"]},
+  {k:'solution',bot:"<strong>Qui bénéficierait de cette solution ?</strong> Quel est le profil des utilisateurs ou équipes concernés ?",q:["Équipes opérationnelles","Management / Direction","Service client","Collaborateurs RH","Équipes commerciales","DSI / Équipe technique","Tous les collaborateurs"]},
+  {k:'utilisateurs',bot:"Quel serait l'<strong>impact attendu</strong> de ce cas d'usage ?\n\nPensez en termes de gain de temps, réduction de coûts, amélioration de la qualité, ou satisfaction.",q:["Gain de productivité majeur","Réduction des coûts","Amélioration de la qualité","Meilleure expérience utilisateur","Décision plus rapide","Réduction des risques / erreurs"]},
+  {k:'impact',bot:"Quel serait le <strong>niveau de priorité</strong> de ce projet selon vous ?",q:["🔴 Critique — à lancer maintenant","🟠 Haute priorité — dans l'année","🟡 Priorité moyenne — moyen terme","🟢 Exploratoire — idée à approfondir"]},
+  {k:'priorite',bot:"Dernière question : avez-vous des <strong>précisions, contraintes ou remarques</strong> à ajouter ?\n\nSi rien à ajouter, tapez simplement <strong>« Non »</strong>.",q:["Non, c'est complet","Quelques précisions à ajouter"]},
+  {k:'remarques',bot:null,q:[]}
+];
+
+const db={
+  get(){try{return JSON.parse(localStorage.getItem('ia_v2')||'[]');}catch{return[];}},
+  set(a){try{localStorage.setItem('ia_v2',JSON.stringify(a));}catch{}}
+};
+
+let ans={},step=0,uname='',busy=false;
+const msgs=document.getElementById('messages');
+const qz=document.getElementById('qz');
+const inp=document.getElementById('inp');
+
+function hideAll(){['landing','chatscreen','adminscreen','qrscreen'].forEach(id=>{
+  const e=document.getElementById(id);e.style.display='none';
+});}
+function showLanding(){hideAll();document.getElementById('landing').style.display='flex';}
+
+function startChat(){
+  hideAll();
+  const cs=document.getElementById('chatscreen');cs.style.display='flex';
+  window.scrollTo(0,0);
+  setTimeout(async()=>{
+    await say(ST[0].bot,1100);step=1;uprog();busy=false;
+  },200);
+}
+
+function uprog(){
+  const tot=ST.length-1;
+  const p=Math.round((step/tot)*100);
+  document.getElementById('pbar').style.width=p+'%';
+  document.getElementById('plbl').textContent=Math.min(step,tot)+' / '+tot;
+}
+
+function scroll(){msgs.scrollTop=msgs.scrollHeight;}
+
+function addMsg(role,html){
+  const d=document.createElement('div');d.className='msg '+role;
+  const av=role==='bot'?'A':(uname?uname[0].toUpperCase():'V');
+  d.innerHTML=`<div class="av ${role==='bot'?'b':'u'}">${av}</div><div class="bbl">${html.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(d);scroll();
+}
+
+function showTyp(){
+  const d=document.createElement('div');d.className='msg bot';d.id='typ';
+  d.innerHTML='<div class="av b">A</div><div class="bbl"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span></div>';
+  msgs.appendChild(d);scroll();
+}
+function rmTyp(){const e=document.getElementById('typ');if(e)e.remove();}
+
+function say(text,delay){
+  return new Promise(r=>{
+    showTyp();
+    setTimeout(()=>{rmTyp();addMsg('bot',text);r();},delay||800);
+  });
+}
+
+function setQ(arr){
+  qz.innerHTML='';
+  arr.forEach(t=>{
+    const b=document.createElement('button');b.className='qb';b.textContent=t;
+    b.onclick=()=>handle(t);qz.appendChild(b);
+  });
+}
+
+async function handle(text){
+  if(busy||!text.trim())return;
+  busy=true;qz.innerHTML='';
+  const cur=ST[step-1];
+  if(cur&&cur.k){
+    ans[cur.k]=text.trim();
+    if(cur.k==='identite')uname=text.trim().split(' ')[0];
+  }
+  addMsg('user',text);
+  inp.value='';inp.style.height='auto';
+
+  if(step>=ST.length){await finish();return;}
+  const nx=ST[step];step++;uprog();
+  if(nx.bot){
+    await say(nx.bot);
+    if(nx.q&&nx.q.length)setQ(nx.q);
+  }
+  busy=false;
+}
+
+async function finish(){
+  const f=mkFiche();
+  const all=db.get();all.push(f);db.set(all);
+  await say(`Merci infiniment, <strong>${uname||'vous'}</strong> ! 🎉\n\nVotre idée a bien été enregistrée. Voici la fiche générée — elle sera intégrée à notre cartographie et soumise au jury :`);
+  const d=document.createElement('div');d.className='msg bot';
+  d.innerHTML=`<div class="av b">A</div><div class="bbl" style="max-width:94%;background:transparent;border:none;padding:2px 0">${renderFiche(f)}</div>`;
+  msgs.appendChild(d);
+  await new Promise(r=>setTimeout(r,400));
+  await say(`Merci pour votre contribution ! Bonne chance pour la sélection. 🚀\n\nSi vous avez une autre idée, cliquez sur le bouton ci-dessous.`);
+  const rb=document.createElement('div');rb.style.padding='6px 24px';
+  rb.innerHTML=`<button class="fab nw" onclick="restart()" style="font-size:14px;padding:10px 22px;">+ Déposer une autre idée</button>`;
+  msgs.appendChild(rb);scroll();busy=false;
+  document.getElementById('pbar').style.width='100%';
+  document.getElementById('plbl').textContent='Terminé ✓';
+}
+
+function mkFiche(){
+  return{
+    id:'F'+Date.now(),
+    date:new Date().toLocaleString('fr-FR'),
+    identite:ans.identite||'',titre:ans.titre||'',
+    probleme:ans.probleme||'',solution:ans.solution||'',
+    utilisateurs:ans.utilisateurs||'',impact:ans.impact||'',
+    priorite:ans.priorite||'',
+    remarques:(ans.remarques&&ans.remarques.toLowerCase()!=='non'&&ans.remarques!=="Non, c'est complet")?ans.remarques:''
+  };
+}
+
+function pc(p){
+  if(!p)return'#4f5f80';
+  if(p.includes('Critique'))return'#e05c6a';
+  if(p.includes('Haute'))return'#f2a93b';
+  if(p.includes('moyenne'))return'#4fa3e0';
+  return'#30b888';
+}
+
+function renderFiche(f){
+  const rows=[
+    ['Porteur',f.identite],['Cas d\'usage',f.titre],
+    ['Problème',f.probleme],['Solution IA',f.solution],
+    ['Utilisateurs',f.utilisateurs],['Impact attendu',f.impact],
+    ['Priorité',`<span style="color:${pc(f.priorite)};font-weight:500">${f.priorite}</span>`],
+  ];
+  if(f.remarques)rows.push(['Remarques',f.remarques]);
+  return`<div class="fiche">
+    <div class="fiche-hd">${f.titre||'Cas d\'usage IA'}</div>
+    ${rows.map(([l,v])=>`<div class="fr"><span class="fl">${l}</span><span class="fv">${v||'—'}</span></div>`).join('')}
+    <div class="fact">
+      <button class="fab cp" onclick="cpFiche('${f.id}')">⎘ Copier la fiche</button>
+    </div>
+  </div>`;
+}
+
+function cpFiche(id){
+  const f=db.get().find(x=>x.id===id)||mkFiche();
+  const t=`FICHE IA — ${f.titre}\n${'─'.repeat(38)}\nPorteur : ${f.identite}\nDate : ${f.date}\nCas d'usage : ${f.titre}\nProblème : ${f.probleme}\nSolution IA : ${f.solution}\nUtilisateurs : ${f.utilisateurs}\nImpact : ${f.impact}\nPriorité : ${f.priorite}\n${f.remarques?'Remarques : '+f.remarques:''}`;
+  navigator.clipboard.writeText(t).then(()=>{
+    document.querySelectorAll('.fab.cp').forEach(b=>{if(b.getAttribute('onclick')?.includes(id)){b.textContent='✓ Copié !';setTimeout(()=>{b.textContent='⎘ Copier la fiche';},2000);}});
+  });
+}
+
+function restart(){
+  ans={};step=0;uname='';busy=false;
+  msgs.innerHTML='';qz.innerHTML='';
+  document.getElementById('pbar').style.width='0%';
+  document.getElementById('plbl').textContent='1 / 8';
+  setTimeout(async()=>{await say(ST[0].bot,900);step=1;uprog();busy=false;},100);
+}
+
+// ADMIN
+function showAdmin(){
+  hideAll();document.getElementById('adminscreen').style.display='block';renderAdmin();
+}
+function renderAdmin(){
+  const all=db.get();
+  document.getElementById('adm-cnt').textContent='('+all.length+')';
+  const g=document.getElementById('agrid');
+  if(!all.length){g.innerHTML='<div class="empty"><div class="empty-icon">📭</div><p>Aucune fiche collectée pour le moment.</p></div>';return;}
+  g.innerHTML=all.map(f=>`<div class="a-card">
+    <div class="a-card-top">
+      <div>
+        <div class="a-card-ttl">${f.titre||'Sans titre'}</div>
+        <div class="a-card-meta">${f.identite} · ${f.date} · ${f.id}</div>
+      </div>
+      <span class="pbadge" style="background:${pc(f.priorite)}22;color:${pc(f.priorite)};border:1px solid ${pc(f.priorite)}44">${(f.priorite||'—').replace(/[🔴🟠🟡🟢]/g,'').trim()}</span>
+    </div>
+    <div class="a-fields">
+      <div><div class="a-field-lbl">Problème</div>${f.probleme||'—'}</div>
+      <div><div class="a-field-lbl">Solution IA</div>${f.solution||'—'}</div>
+      <div><div class="a-field-lbl">Utilisateurs</div>${f.utilisateurs||'—'}</div>
+      <div><div class="a-field-lbl">Impact</div>${f.impact||'—'}</div>
+      ${f.remarques?`<div style="grid-column:1/-1"><div class="a-field-lbl">Remarques</div>${f.remarques}</div>`:''}
+    </div>
+  </div>`).join('');
+}
+
+function exportCSV(){
+  const all=db.get();if(!all.length)return alert('Aucune fiche.');
+  const h=['ID','Date','Porteur','Titre','Problème','Solution','Utilisateurs','Impact','Priorité','Remarques'];
+  const rows=all.map(f=>[f.id,f.date,f.identite,f.titre,f.probleme,f.solution,f.utilisateurs,f.impact,f.priorite,f.remarques||''].map(v=>'"'+(v||'').replace(/"/g,'""')+'"').join(','));
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent([h.join(','),...rows].join('\n'));
+  a.download='fiches-ia-'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+}
+function exportJSON(){
+  const all=db.get();if(!all.length)return alert('Aucune fiche.');
+  const a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(all,null,2));
+  a.download='fiches-ia-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+function clearAll(){
+  if(confirm('Supprimer toutes les fiches ?')){localStorage.removeItem('ia_v2');renderAdmin();}
+}
+
+// QR
+function showQR(){
+  hideAll();const qs=document.getElementById('qrscreen');qs.style.display='flex';
+  const url=window.location.href.split('?')[0];
+  document.getElementById('qrlbl').textContent=url;
+  const qd=document.getElementById('qrcode');qd.innerHTML='';
+  new QRCode(qd,{text:url,width:220,height:220,colorDark:'#0d0f14',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
+}
+function hideQR(){showLanding();}
+
+// events
+document.getElementById('snd').onclick=()=>{const v=inp.value.trim();if(v)handle(v);};
+inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();const v=inp.value.trim();if(v)handle(v);}});
+inp.addEventListener('input',e=>{e.target.style.height='auto';e.target.style.height=Math.min(e.target.scrollHeight,120)+'px';});
+document.addEventListener('keydown',e=>{
+  if((e.key==='q'||e.key==='Q')&&document.getElementById('landing').style.display!=='none')showQR();
+  if(e.key==='Escape'&&document.getElementById('qrscreen').style.display!=='none')hideQR();
+});
+</script>
+</body>
+</html>
