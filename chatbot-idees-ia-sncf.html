@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovation IA · TGV Axe Sud-Est · SNCF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#080c14;
+  --s1:#0b1120;
+  --s2:#101828;
+  --s3:#162035;
+  --border:rgba(200,220,255,0.09);
+  --border2:rgba(200,220,255,0.15);
+  --sncf:#c8102e;
+  --sncf2:#a50d26;
+  --sky:#3b9ede;
+  --mint:#28b589;
+  --amber:#f0a030;
+  --rose:#e05568;
+  --txt:#dce8fa;
+  --txt2:#7a90b8;
+  --txt3:#3e506e;
+  --user:#0d1e3a;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--txt);font-family:'Bricolage Grotesque',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;position:relative;z-index:1;}
+.screen.active{display:flex;}
+#landing{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px 80px;overflow:hidden;}
+#chatscreen{flex-direction:column;max-width:760px;margin:0 auto;width:100%;}
+#adminscreen{flex-direction:column;padding:36px 28px;max-width:960px;margin:0 auto;width:100%;}
+#qrscreen{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;position:fixed;inset:0;z-index:200;background:var(--bg);}
+#loginscreen{flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;}
+
+/* ── BACKGROUND EFFECTS ── */
+.orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;}
+.o1{width:600px;height:600px;top:-200px;left:50%;transform:translateX(-55%);background:radial-gradient(ellipse,rgba(59,158,222,0.1),transparent 65%);}
+.o2{width:350px;height:350px;bottom:-80px;right:-60px;background:radial-gradient(ellipse,rgba(40,181,137,0.08),transparent 65%);}
+.o3{width:250px;height:250px;bottom:100px;left:-40px;background:radial-gradient(ellipse,rgba(200,16,46,0.06),transparent 65%);}
+
+/* ── LANDING ── */
+.l-brand{
+  display:flex;align-items:center;gap:12px;margin-bottom:36px;
+  font-size:12px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--txt2);font-weight:500;
+}
+.l-brand-bar{width:1px;height:24px;background:var(--border2);}
+.sncf-badge{
+  background:var(--sncf);color:white;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;
+  padding:5px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;
+}
+.l-h1{
+  font-family:'Lora',serif;
+  font-size:clamp(2.6rem,6.5vw,5rem);
+  line-height:1.08;letter-spacing:-1.5px;font-weight:400;
+  margin-bottom:22px;max-width:680px;
+}
+.l-h1 em{font-style:italic;color:var(--sky);}
+.l-h1 strong{font-style:normal;font-weight:500;color:var(--mint);}
+.l-sub{font-size:1.05rem;color:var(--txt2);max-width:480px;line-height:1.78;margin-bottom:44px;font-weight:300;}
+.l-cta{
+  display:inline-flex;align-items:center;gap:11px;
+  background:linear-gradient(135deg,var(--sncf),#e8203c);
+  color:white;font-size:15px;font-weight:600;letter-spacing:.2px;
+  padding:16px 38px;border-radius:50px;border:none;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+}
+.l-cta:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(200,16,46,0.35);}
+.l-cta:active{transform:translateY(0);}
+.l-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:48px;}
+.chip{
+  background:rgba(255,255,255,0.04);border:1px solid var(--border2);
+  color:var(--txt2);font-size:12px;padding:7px 16px;border-radius:30px;
+  display:flex;align-items:center;gap:7px;font-weight:400;
+}
+.dot{width:6px;height:6px;border-radius:50%;}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:30;
+  background:rgba(8,12,20,.93);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  padding:13px 24px;display:flex;align-items:center;gap:13px;
+}
+.t-logo{
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.t-sncf{background:var(--sncf);color:white;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:4px 9px;border-radius:3px;letter-spacing:1px;}
+.t-sep{width:1px;height:18px;background:var(--border2);}
+.t-title{font-size:13px;font-weight:500;color:var(--txt);}
+.t-sub{font-size:10px;color:var(--mint);font-weight:500;margin-top:1px;}
+.t-prog{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.prog-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txt3);}
+.prog-rail{width:88px;height:3px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--sky),var(--mint));border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
+
+/* ── MESSAGES ── */
+#messages{flex:1;padding:28px 24px;display:flex;flex-direction:column;gap:18px;}
+.msg{display:flex;gap:10px;animation:rise .3s ease;}
+@keyframes rise{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:translateY(0);}}
+.msg.user{flex-direction:row-reverse;}
+.av{width:33px;height:33px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}
+.av.b{background:linear-gradient(135deg,var(--sncf),var(--sky));color:white;}
+.av.u{background:rgba(59,158,222,0.12);border:1px solid rgba(59,158,222,0.22);color:var(--sky);}
+.bbl{max-width:78%;padding:13px 17px;border-radius:18px;font-size:14.5px;line-height:1.72;color:var(--txt);}
+.msg.bot .bbl{background:var(--s3);border:1px solid var(--border);border-bottom-left-radius:4px;}
+.msg.user .bbl{background:var(--user);border:1px solid rgba(59,158,222,0.18);border-bottom-right-radius:4px;}
+.bbl strong{color:var(--amber);font-weight:500;}
+.bbl em{color:var(--sky);font-style:normal;}
+.warn-bbl{background:rgba(240,160,48,0.08);border:1px solid rgba(240,160,48,0.25);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--amber);margin-top:6px;}
+
+.qz{padding:4px 24px 14px;display:flex;flex-wrap:wrap;gap:8px;}
+.qb{
+  background:transparent;border:1px solid var(--border2);
+  color:var(--txt2);font-size:13px;padding:8px 16px;border-radius:30px;
+  cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;
+  transition:all .16s;
+}
+.qb:hover{background:rgba(59,158,222,0.1);border-color:rgba(59,158,222,0.38);color:var(--txt);transform:translateY(-1px);}
+
+.ibar{
+  position:sticky;bottom:0;z-index:20;
+  background:rgba(8,12,20,.93);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-top:1px solid var(--border);padding:13px 24px;display:flex;gap:10px;align-items:flex-end;
+}
+#inp{
+  flex:1;background:var(--s3);border:1px solid var(--border);
+  border-radius:14px;padding:11px 16px;color:var(--txt);
+  font-size:14px;font-family:'Bricolage Grotesque',sans-serif;
+  outline:none;resize:none;min-height:44px;max-height:120px;line-height:1.5;
+  transition:border-color .2s;
+}
+#inp:focus{border-color:rgba(59,158,222,0.42);}
+#inp::placeholder{color:var(--txt3);}
+#snd{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--sncf),var(--sky));
+  border:none;cursor:pointer;color:white;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .15s,box-shadow .15s;
+}
+#snd:hover{transform:scale(1.07);box-shadow:0 5px 16px rgba(200,16,46,0.3);}
+#snd:active{transform:scale(.96);}
+
+/* typing */
+.tdot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--txt3);margin:0 2px;animation:tp 1.2s infinite;}
+.tdot:nth-child(2){animation-delay:.2s;}
+.tdot:nth-child(3){animation-delay:.4s;}
+@keyframes tp{0%,80%,100%{opacity:.3;transform:scale(.75);}40%{opacity:1;transform:scale(1);}}
+
+/* ── FICHE ── */
+.fiche{
+  background:var(--s2);border:1px solid rgba(40,181,137,0.3);
+  border-radius:18px;padding:22px;font-size:13.5px;max-width:95%;
+}
+.fiche-hd{
+  font-family:'Lora',serif;font-size:18px;font-style:italic;
+  color:var(--mint);margin-bottom:18px;letter-spacing:.1px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.fiche-stamp{
+  font-family:'JetBrains Mono',monospace;font-size:9.5px;
+  color:var(--txt3);letter-spacing:.8px;text-transform:uppercase;
+  background:rgba(255,255,255,0.04);padding:4px 10px;border-radius:6px;
+  white-space:nowrap;margin-top:2px;flex-shrink:0;
+}
+.fr{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.fr:last-of-type{border-bottom:none;}
+.fl{font-family:'JetBrains Mono',monospace;color:var(--txt3);font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;min-width:128px;padding-top:2px;flex-shrink:0;}
+.fv{color:var(--txt);font-size:13.5px;flex:1;line-height:1.6;}
+.fiche-actions{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap;}
+.fab{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:600;
+  padding:9px 20px;border-radius:10px;cursor:pointer;border:none;transition:all .15s;
+}
+.fab.send{
+  background:linear-gradient(135deg,var(--sncf),#e8203c);color:white;
+  box-shadow:0 4px 16px rgba(200,16,46,0.25);
+}
+.fab.send:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,16,46,0.35);}
+.fab.send:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.fab.cp{background:rgba(40,181,137,0.13);color:var(--mint);}
+.fab.cp:hover{background:rgba(40,181,137,0.25);}
+.fab.nw{background:rgba(59,158,222,0.13);color:var(--sky);}
+.fab.nw:hover{background:rgba(59,158,222,0.25);}
+.sent-confirm{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(40,181,137,0.1);border:1px solid rgba(40,181,137,0.3);
+  color:var(--mint);font-size:13px;padding:10px 16px;border-radius:10px;
+}
+
+/* ── LOGIN ── */
+.login-box{
+  background:var(--s2);border:1px solid var(--border2);
+  border-radius:20px;padding:40px 36px;max-width:380px;width:100%;text-align:center;
+}
+.login-box h2{font-family:'Lora',serif;font-size:22px;font-style:italic;color:var(--txt);margin-bottom:8px;}
+.login-box p{font-size:13px;color:var(--txt2);margin-bottom:28px;}
+.linp{
+  width:100%;background:var(--s3);border:1px solid var(--border);
+  border-radius:10px;padding:11px 14px;color:var(--txt);
+  font-size:14px;font-family:'Bricolage Grotesque',sans-serif;
+  outline:none;margin-bottom:12px;
+}
+.linp:focus{border-color:rgba(200,16,46,0.4);}
+.linp::placeholder{color:var(--txt3);}
+.lbtn{
+  width:100%;background:linear-gradient(135deg,var(--sncf),#e8203c);
+  color:white;font-size:14px;font-weight:600;padding:12px;
+  border-radius:10px;border:none;cursor:pointer;transition:opacity .15s;
+  font-family:'Bricolage Grotesque',sans-serif;
+}
+.lbtn:hover{opacity:.9;}
+.lerr{color:var(--rose);font-size:12px;margin-top:8px;display:none;}
+.lback{color:var(--txt3);font-size:12px;margin-top:16px;cursor:pointer;transition:color .15s;}
+.lback:hover{color:var(--txt2);}
+
+/* ── ADMIN ── */
+.adm-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px;}
+.adm-h{font-family:'Lora',serif;font-size:2rem;font-style:italic;color:var(--txt);}
+.adm-h span{color:var(--sncf);}
+.adm-meta{font-size:12px;color:var(--txt3);margin-top:4px;}
+.adm-btns{display:flex;gap:9px;flex-wrap:wrap;}
+.ab{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;padding:9px 18px;border-radius:10px;cursor:pointer;border:none;transition:all .15s;font-family:'Bricolage Grotesque',sans-serif;}
+.ab.ex{background:rgba(40,181,137,0.13);color:var(--mint);}
+.ab.ex:hover{background:rgba(40,181,137,0.24);}
+.ab.cl{background:rgba(224,85,104,0.13);color:var(--rose);}
+.ab.cl:hover{background:rgba(224,85,104,0.24);}
+.ab.bk{background:rgba(255,255,255,0.06);color:var(--txt2);}
+.ab.bk:hover{background:rgba(255,255,255,0.1);}
+.adm-stats{display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap;}
+.stat{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:14px 20px;min-width:120px;}
+.stat-n{font-family:'Lora',serif;font-size:2rem;font-style:italic;color:var(--txt);}
+.stat-l{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txt3);letter-spacing:.8px;text-transform:uppercase;margin-top:2px;}
+.agrid{display:flex;flex-direction:column;gap:16px;}
+.acard{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:20px;border-left:3px solid var(--sncf);}
+.acard-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px;}
+.acard-ttl{font-family:'Lora',serif;font-size:16px;color:var(--txt);}
+.acard-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txt3);margin-top:3px;letter-spacing:.3px;}
+.pbadge{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:600;white-space:nowrap;flex-shrink:0;}
+.afields{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;font-size:13px;color:var(--txt);}
+.afl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txt3);letter-spacing:.7px;text-transform:uppercase;margin-bottom:3px;}
+.empty{text-align:center;padding:72px 20px;color:var(--txt3);}
+
+/* ── QR ── */
+.qr-brand{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--sncf);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.qr-brand::before,.qr-brand::after{content:'';width:28px;height:1px;background:var(--sncf);opacity:.5;}
+.qr-h{font-family:'Lora',serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:400;font-style:italic;color:var(--txt);line-height:1.1;margin-bottom:12px;letter-spacing:-1px;}
+.qr-h em{font-style:normal;color:var(--sky);}
+.qr-sub{font-size:1rem;color:var(--txt2);margin-bottom:38px;max-width:440px;line-height:1.7;}
+.qr-wrap{background:white;border-radius:20px;padding:20px;box-shadow:0 0 80px rgba(200,16,46,0.15),0 0 120px rgba(59,158,222,0.1);margin-bottom:26px;}
+.qr-url{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--txt3);margin-bottom:32px;word-break:break-all;max-width:500px;}
+.qr-steps{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.qrs{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:12px;padding:11px 16px;font-size:12.5px;color:var(--txt2);}
+.qrs-n{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--sncf),var(--sky));color:white;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qr-x{position:fixed;top:22px;right:22px;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--txt2);width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;border:none;}
+.qr-x:hover{background:rgba(255,255,255,0.12);color:var(--txt);}
+
+/* secret admin btn */
+.adm-trig{position:fixed;bottom:16px;right:16px;z-index:50;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--txt3);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;padding:6px 11px;border-radius:7px;cursor:pointer;transition:all .15s;}
+.adm-trig:hover{color:var(--txt2);background:rgba(255,255,255,0.08);}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing" class="screen active">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+  <div class="l-brand">
+    <span class="sncf-badge">SNCF</span>
+    <div class="l-brand-bar"></div>
+    <span>TGV · Axe Sud-Est · Programme Innovation IA</span>
+  </div>
+  <h1 class="l-h1">Votre idée peut<br><em>transformer</em><br><strong>le TGV de demain</strong></h1>
+  <p class="l-sub">Partagez votre cas d'usage IA en quelques minutes. Les meilleures propositions seront sélectionnées et développées avec vous sur l'axe Sud-Est.</p>
+  <button class="l-cta" onclick="startChat()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    Déposer mon idée maintenant
+  </button>
+  <div class="l-chips">
+    <div class="chip"><span class="dot" style="background:var(--mint)"></span>5 minutes suffisent</div>
+    <div class="chip"><span class="dot" style="background:var(--sky)"></span>Tous les métiers</div>
+    <div class="chip"><span class="dot" style="background:var(--amber)"></span>Jury de sélection</div>
+    <div class="chip"><span class="dot" style="background:var(--sncf)"></span>Axe Sud-Est</div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="chatscreen" class="screen">
+  <div class="topbar">
+    <div class="t-logo">
+      <span class="t-sncf">SNCF</span>
+      <div class="t-sep"></div>
+      <div>
+        <div class="t-title">Assistant Innovation IA — TGV Sud-Est</div>
+        <div class="t-sub">Collecte de cas d'usage · Programme Groupe</div>
+      </div>
+    </div>
+    <div class="t-prog">
+      <span class="prog-lbl" id="plbl">1/8</span>
+      <div class="prog-rail"><div class="prog-fill" id="pbar"></div></div>
+    </div>
+  </div>
+  <div id="messages"></div>
+  <div class="qz" id="qz"></div>
+  <div class="ibar">
+    <textarea id="inp" placeholder="Votre réponse…" rows="1"></textarea>
+    <button id="snd" aria-label="Envoyer">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8h12M8.5 3l5.5 5-5.5 5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginscreen" class="screen">
+  <div class="login-box">
+    <div style="margin-bottom:20px">
+      <span class="sncf-badge">SNCF</span>
+    </div>
+    <h2>Espace organisateur</h2>
+    <p>Accès réservé aux membres de l'équipe Innovation TGV Sud-Est</p>
+    <input class="linp" id="l-user" type="text" placeholder="Nom d'utilisateur" autocomplete="off">
+    <input class="linp" id="l-pass" type="password" placeholder="Mot de passe" autocomplete="off">
+    <p class="lerr" id="lerr">Identifiants incorrects. Veuillez réessayer.</p>
+    <button class="lbtn" onclick="doLogin()">Accéder au tableau de bord</button>
+    <p class="lback" onclick="showLanding()">← Retour à l'accueil</p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminscreen" class="screen">
+  <div class="adm-top">
+    <div>
+      <div class="adm-h">Tableau de bord <span>Innovation</span></div>
+      <div class="adm-meta" id="adm-meta">TGV Axe Sud-Est · Fiches collectées</div>
+    </div>
+    <div class="adm-btns">
+      <button class="ab ex" onclick="exportCSV()">↓ Export CSV</button>
+      <button class="ab ex" onclick="exportJSON()">↓ Export JSON</button>
+      <button class="ab cl" onclick="clearAll()">Vider</button>
+      <button class="ab bk" onclick="logout()">← Déconnexion</button>
+    </div>
+  </div>
+  <div class="adm-stats" id="adm-stats"></div>
+  <div class="agrid" id="agrid"></div>
+</div>
+
+<!-- QR -->
+<div id="qrscreen" class="screen">
+  <button class="qr-x" onclick="hideAll();show('landing')" aria-label="Fermer">✕</button>
+  <div class="qr-brand">TGV Axe Sud-Est · Innovation IA</div>
+  <h2 class="qr-h">Déposez votre<br><em>idée IA</em></h2>
+  <p class="qr-sub">Scannez le QR code, ouvrez l'assistant sur votre smartphone et contribuez en 5 minutes chrono.</p>
+  <div class="qr-wrap"><div id="qrcode"></div></div>
+  <p class="qr-url" id="qrlbl"></p>
+  <div class="qr-steps">
+    <div class="qrs"><div class="qrs-n">1</div>Scannez</div>
+    <div class="qrs"><div class="qrs-n">2</div>Répondez</div>
+    <div class="qrs"><div class="qrs-n">3</div>Soumettez</div>
+  </div>
+</div>
+
+<button class="adm-trig" onclick="show('loginscreen')">ADM</button>
+
+<script>
+// ── STATE ──
+let ans={}, step=0, uname='', busy=false;
+const DB_KEY='sncf_ia_fiches_v3';
+
+function db_get(){try{return JSON.parse(localStorage.getItem(DB_KEY)||'[]');}catch{return[];}}
+function db_set(a){try{localStorage.setItem(DB_KEY,JSON.stringify(a));}catch{}}
+
+// ── SCREENS ──
+function hideAll(){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));}
+function show(id){hideAll();document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function showLanding(){show('landing');}
+
+// ── CHAT FLOW ──
+const msgs=document.getElementById('messages');
+const qz=document.getElementById('qz');
+const inp=document.getElementById('inp');
+
+function startChat(){
+  ans={};step=0;uname='';busy=false;
+  msgs.innerHTML='';qz.innerHTML='';
+  document.getElementById('pbar').style.width='0%';
+  document.getElementById('plbl').textContent='1/8';
+  show('chatscreen');
+  setTimeout(async()=>{
+    await say("Bonjour et bienvenue ! 👋\n\nJe suis l'assistant Innovation IA de <strong>SNCF TGV — Axe Sud-Est</strong>. C'est un plaisir de vous accueillir dans le cadre de notre programme de collecte d'idées.\n\nVotre proposition pourra être sélectionnée par notre jury et développée au sein du groupe. Votre contribution est précieuse.\n\nPour commencer, pourriez-vous me donner votre <strong>prénom et nom de famille</strong> ?",1100);
+    step=1;uprog();busy=false;
+  },200);
+}
+
+function uprog(){
+  const tot=8,p=Math.round((step/tot)*100);
+  document.getElementById('pbar').style.width=p+'%';
+  document.getElementById('plbl').textContent=Math.min(step,tot)+'/'+tot;
+}
+
+function scrollBot(){msgs.scrollTop=msgs.scrollHeight;}
+function addMsg(role,html){
+  const d=document.createElement('div');d.className='msg '+role;
+  const av=role==='bot'?'S':(uname?uname[0].toUpperCase():'V');
+  d.innerHTML=`<div class="av ${role==='bot'?'b':'u'}">${av}</div><div class="bbl">${html.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(d);scrollBot();
+}
+function showTyp(){
+  const d=document.createElement('div');d.className='msg bot';d.id='typ';
+  d.innerHTML='<div class="av b">S</div><div class="bbl"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span></div>';
+  msgs.appendChild(d);scrollBot();
+}
+function rmTyp(){const e=document.getElementById('typ');if(e)e.remove();}
+function say(html,delay){
+  return new Promise(r=>{showTyp();setTimeout(()=>{rmTyp();addMsg('bot',html);r();},delay||850);});
+}
+function setQ(arr){
+  qz.innerHTML='';
+  arr.forEach(t=>{
+    const b=document.createElement('button');b.className='qb';b.textContent=t;
+    b.onclick=()=>handle(t);qz.appendChild(b);
+  });
+}
+
+// ── SYSTÈME DE PROMPT CONVERSATIONNEL ──
+const SYSTEM_PROMPT = `Tu es un assistant IA de SNCF TGV — Axe Sud-Est, chargé de collecter des idées de cas d'usage IA auprès des collaborateurs, lors d'une présentation sur scène. Tu es chaleureux, curieux, intelligent, et tu parles comme une vraie IA conversationnelle — pas comme un formulaire.
+
+TON RÔLE : guider l'utilisateur à travers 8 étapes de collecte. À chaque étape, tu analyses la réponse en profondeur et tu réagis de façon naturelle et intelligente.
+
+ÉTAPES À COLLECTER (dans cet ordre) :
+1. identite — prénom + nom de famille
+2. service — service ou direction SNCF
+3. titre — titre du cas d'usage IA
+4. probleme — description du problème ou de la situation actuelle
+5. solution — solution IA envisagée
+6. utilisateurs — qui bénéficierait de la solution
+7. impact — impact attendu
+8. priorite — niveau de priorité
+9. remarques — remarques / précisions finales
+
+RÈGLES ABSOLUES :
+- Tu réponds UNIQUEMENT en JSON, sans backticks, sans explication autour.
+- Format : {"ok": true/false, "reply": "...", "field_validated": "...", "advance": true/false}
+- "ok" = la réponse est valide et suffisamment précise pour être enregistrée
+- "reply" = ta réponse naturelle à l'utilisateur (HTML autorisé : <strong>, <br>)
+- "field_validated" = la valeur nettoyée à sauvegarder (vide si ok=false)
+- "advance" = passer à l'étape suivante (true si ok=true seulement)
+
+COMPORTEMENT PAR ÉTAPE :
+
+Étape identite : Vérifie que c'est un prénom + nom humain réel (pas "informatique", pas un seul mot générique). Si invalide, redemande gentiment. Si valide, accuse réception chaleureusement avec le prénom.
+
+Étape service : Accepte toute réponse sensée. Reformule ou clarifie si besoin. Réponds naturellement.
+
+Étape titre : Vérifie que c'est un titre de projet cohérent (min 3 mots). Si trop court ou flou, demande de préciser.
+
+Étape probleme : C'est l'étape la PLUS IMPORTANTE. Si l'utilisateur répond avec un mot ou une expression courte (ex: "automatisation de tâches", "traitement de documents"), tu NE DOIS PAS valider. Tu dois absolument lui demander des précisions : dans quel contexte précis ? Sur quoi porte cette automatisation à la SNCF TGV ? Quel processus exact ? Tu reformules ce que tu as compris et tu poses une question ouverte et intelligente. Valide seulement quand la description est concrète et située.
+
+Étape solution : Même logique. Si l'utilisateur dit "automatisation intelligente" ou "analyse prédictive" sans contexte, pose une question de clarification : pour faire quoi exactement ? Sur quelles données ? Comment ça s'intègrerait dans le quotidien des équipes ? Valide quand la solution est suffisamment définie.
+
+Étape utilisateurs : Valide si un groupe de personnes est mentionné. Sinon demande.
+
+Étape impact : Valide si l'impact est décrit concrètement. Sinon invite à préciser.
+
+Étape priorite : Accepte toute réponse sur la priorité. Reformule si c'est du texte libre.
+
+Étape remarques : Accepte "non" ou toute précision. Si l'utilisateur dit "non" ou rien, field_validated = "".
+
+STYLE DE RÉPONSE :
+- Chaleureux, curieux, un peu enthousiaste mais professionnel
+- Tu reformules ce que tu as compris avant de poser ta question de suivi
+- Tu utilises le prénom de la personne (disponible dans le contexte) quand c'est naturel
+- Tu ne dis JAMAIS "Très clair", "Parfait", "Noté" ou autre accusé de réception vide si la réponse est insuffisante
+- Quand une réponse est riche et détaillée, tu peux montrer de l'enthousiasme sincère
+- Longueur de réponse : 1 à 3 phrases, jamais plus`;
+
+async function aiAnalyze(currentStep, value, context){
+  const contextStr = Object.entries(context).filter(([,v])=>v).map(([k,v])=>`${k}: ${v}`).join('\n');
+  const userMsg = `Contexte collecté jusqu'ici :\n${contextStr || 'aucun'}\n\nÉtape actuelle : ${currentStep}\nRéponse de l'utilisateur : "${value}"\n\nAnalyse cette réponse et réponds en JSON.`;
+  
+  try{
+    const r = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:400,
+        system: SYSTEM_PROMPT,
+        messages:[{role:"user", content: userMsg}]
+      })
+    });
+    const d = await r.json();
+    const txt = (d.content||[]).map(x=>x.text||'').join('').replace(/```json|```/g,'').trim();
+    return JSON.parse(txt);
+  }catch(e){
+    // fallback silencieux : on accepte la réponse et on avance
+    return {ok:true, reply:'', field_validated: value, advance:true};
+  }
+}
+
+// ── ORDRE DES ÉTAPES ──
+const STEP_KEYS = ['identite','service','titre','probleme','solution','utilisateurs','impact','priorite','remarques'];
+const STEP_QUESTIONS = {
+  service: {
+    q:"Merci ! Pour que notre équipe puisse vous recontacter, quel est votre <strong>service ou direction de rattachement</strong> au sein de SNCF ?",
+    hints:[]
+  },
+  titre: {
+    q:"Parfait. Quel est le <strong>titre ou l'intitulé de votre idée</strong> ? (un nom court et évocateur, comme un titre de projet)",
+    hints:[]
+  },
+  probleme: {
+    q:"Décrivez le <strong>problème ou la situation actuelle</strong> que vous souhaitez améliorer. Qu'est-ce qui prend trop de temps, génère des erreurs, ou freine la performance ?",
+    hints:["Tâches répétitives à automatiser","Analyse de données complexe","Traitement de documents","Relation client / voyageurs","Processus décisionnel lent","Sécurité / prévention","Maintenance / technique","Autre situation"]
+  },
+  solution: {
+    q:"Décrivez la <strong>solution IA que vous imaginez</strong> : quelle capacité ou fonctionnalité IA transformerait cette situation ?",
+    hints:["Automatisation intelligente","Analyse prédictive","Génération de documents","Classification / détection","Assistant conversationnel","Vision par ordinateur / caméras","Recherche intelligente dans les données","Aide à la décision"]
+  },
+  utilisateurs: {
+    q:"<strong>Qui bénéficierait de cette solution ?</strong> Quels sont les métiers ou équipes concernés sur l'axe Sud-Est ?",
+    hints:["Conducteurs / ADC","Accompagnateurs / ASCT","Agents en gare","Maintenance / technicentre","Encadrement / Management","DSI / Équipe projet","Service client voyageurs","Tous les collaborateurs"]
+  },
+  impact: {
+    q:"Quel serait l'<strong>impact attendu</strong> de ce cas d'usage ? (gain de temps, qualité, sécurité, satisfaction…)",
+    hints:["Gain de productivité majeur","Réduction des coûts","Amélioration de la sécurité","Meilleure ponctualité","Meilleure expérience voyageur","Réduction des incidents","Décision plus rapide"]
+  },
+  priorite: {
+    q:"Quel serait le <strong>niveau de priorité</strong> de ce projet selon vous ?",
+    hints:["🔴 Critique — à lancer maintenant","🟠 Haute priorité — dans l'année","🟡 Priorité moyenne — moyen terme","🟢 Exploratoire — idée à approfondir"]
+  },
+  remarques: {
+    q:"Pour finir : avez-vous des <strong>précisions, contraintes ou remarques</strong> à ajouter ? (ressources, contraintes réglementaires, dépendances…)\n\nSi rien à ajouter, tapez <strong>« Non »</strong>.",
+    hints:["Non, c'est complet","Quelques précisions à ajouter"]
+  }
+};
+
+async function handle(text){
+  if(busy||!text.trim())return;
+  busy=true;qz.innerHTML='';
+  addMsg('user',text);
+  inp.value='';inp.style.height='auto';
+
+  const currentKey = STEP_KEYS[step-1];
+
+  // Cas spécial : étape identite (step=1)
+  if(step===1){
+    showTyp();
+    const result = await aiAnalyze('identite', text.trim(), ans);
+    rmTyp();
+    if(!result.advance){
+      await say(result.reply || "Pourriez-vous bien m'indiquer votre prénom et nom de famille ?");
+      busy=false; return;
+    }
+    ans.identite = result.field_validated || text.trim();
+    uname = ans.identite.split(' ')[0];
+    // Afficher la réponse de l'IA si elle en a une, sinon message par défaut
+    if(result.reply) await say(result.reply);
+    // Passer à l'étape suivante
+    step=2; uprog();
+    const next = STEP_QUESTIONS['service'];
+    await say(next.q);
+    if(next.hints.length) setQ(next.hints);
+    busy=false; return;
+  }
+
+  // Étape remarques finale (step=9)
+  if(step===9){
+    const val = text.trim().toLowerCase();
+    ans.remarques = (val==='non'||val==="non, c'est complet") ? '' : text.trim();
+    await finalize(); return;
+  }
+
+  // Toutes les autres étapes : analyse IA
+  if(currentKey){
+    showTyp();
+    const result = await aiAnalyze(currentKey, text.trim(), ans);
+    rmTyp();
+
+    if(!result.advance){
+      // Réponse insuffisante : l'IA pose une question de suivi
+      await say(result.reply || "Pourriez-vous développer un peu plus votre réponse ?");
+      // Remettre les hints de cette étape
+      const hints = STEP_QUESTIONS[currentKey]?.hints || [];
+      if(hints.length) setQ(hints);
+      busy=false; return;
+    }
+
+    // Réponse valide : on enregistre
+    ans[currentKey] = result.field_validated || text.trim();
+    if(currentKey==='identite') uname = ans.identite.split(' ')[0];
+
+    step++;
+    uprog();
+
+    const nextKey = STEP_KEYS[step-1];
+
+    if(!nextKey){
+      await finalize(); return;
+    }
+
+    // L'IA répond avec son message validant + la prochaine question
+    if(result.reply){
+      await say(result.reply);
+      await new Promise(r=>setTimeout(r,300));
+    }
+
+    const nextQ = STEP_QUESTIONS[nextKey];
+    if(nextQ){
+      await say(nextQ.q, result.reply ? 600 : 850);
+      if(nextQ.hints.length) setQ(nextQ.hints);
+    }
+    busy=false;
+  } else {
+    busy=false;
+  }
+}
+
+// ── FICHE & ENVOI ──
+let currentFiche=null;
+
+async function finalize(){
+  currentFiche=buildFiche();
+  await say(`Merci beaucoup, <strong>${uname}</strong> ! 🎉\n\nVotre idée a bien été enregistrée dans notre programme Innovation IA TGV Sud-Est.\n\nNous reviendrons vers vous prochainement — votre proposition sera étudiée par notre jury de sélection dans les prochaines semaines.\n\nVoici votre fiche récapitulative :`);
+  const d=document.createElement('div');d.className='msg bot';
+  d.innerHTML=`<div class="av b">S</div><div class="bbl" style="max-width:96%;background:transparent;border:none;padding:2px 0">${renderFiche(currentFiche)}</div>`;
+  msgs.appendChild(d);
+  await new Promise(r=>setTimeout(r,400));
+  scrollBot();busy=false;
+  document.getElementById('pbar').style.width='100%';
+  document.getElementById('plbl').textContent='✓';
+}
+
+function buildFiche(){
+  return{
+    id:'ASE-'+Date.now(),
+    date:new Date().toLocaleString('fr-FR'),
+    submitted:false,
+    identite:ans.identite||'',
+    service:ans.service||'',
+    titre:ans.titre||'',
+    probleme:ans.probleme||'',
+    solution:ans.solution||'',
+    utilisateurs:ans.utilisateurs||'',
+    impact:ans.impact||'',
+    priorite:ans.priorite||'',
+    remarques:ans.remarques||''
+  };
+}
+
+function pc(p){
+  if(!p)return'#3e506e';
+  if(p.includes('Critique'))return'#e05568';
+  if(p.includes('Haute'))return'#f0a030';
+  if(p.includes('moyenne'))return'#3b9ede';
+  return'#28b589';
+}
+
+function renderFiche(f){
+  const rows=[
+    ['Porteur',f.identite],['Service / Direction',f.service],
+    ["Intitulé",f.titre],['Problème identifié',f.probleme],
+    ['Solution IA',f.solution],['Bénéficiaires',f.utilisateurs],
+    ['Impact attendu',f.impact],
+    ['Priorité',`<span style="color:${pc(f.priorite)};font-weight:500">${f.priorite}</span>`],
+    ...(f.remarques?[['Remarques',f.remarques]]:[])
+  ];
+  return`<div class="fiche">
+    <div class="fiche-hd">
+      <div>${f.titre||'Cas d\'usage IA'}</div>
+      <span class="fiche-stamp">${f.id} · ${f.date}</span>
+    </div>
+    ${rows.map(([l,v])=>`<div class="fr"><span class="fl">${l}</span><span class="fv">${v||'—'}</span></div>`).join('')}
+    <div class="fiche-actions" id="fact-${f.id}">
+      <button class="fab send" id="sendbtn-${f.id}" onclick="submitFiche('${f.id}')">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M1 7.5h13M7.5 2l6 5.5-6 5.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Envoyer mon idée
+      </button>
+      <button class="fab cp" onclick="cpFiche('${f.id}')">⎘ Copier</button>
+      <button class="fab nw" onclick="startChat()">+ Nouvelle idée</button>
+    </div>
+  </div>`;
+}
+
+function submitFiche(id){
+  const all=db_get();
+  let fiche=all.find(x=>x.id===id);
+  if(!fiche&&currentFiche&&currentFiche.id===id){
+    fiche=currentFiche;all.push(fiche);
+  }
+  if(!fiche)return;
+  fiche.submitted=true;
+  fiche.submittedAt=new Date().toLocaleString('fr-FR');
+  db_set(all.map(f=>f.id===id?fiche:f));
+  if(!all.find(x=>x.id===id)){db_set([...db_get(),fiche]);}
+  // update UI
+  const area=document.getElementById('fact-'+id);
+  if(area){
+    area.innerHTML=`<div class="sent-confirm">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#28b589" stroke-width="1.4"/><path d="M5 8l2 2 4-4" stroke="#28b589" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Votre idée a bien été envoyée ! Notre équipe vous contactera prochainement.
+    </div>`;
+  }
+}
+
+function cpFiche(id){
+  const all=db_get();
+  const f=all.find(x=>x.id===id)||(currentFiche&&currentFiche.id===id?currentFiche:null);
+  if(!f)return;
+  const t=`FICHE IA — ${f.titre}\n${'─'.repeat(40)}\nID : ${f.id}\nDate : ${f.date}\nPorteur : ${f.identite}\nService : ${f.service}\nTitre : ${f.titre}\nProblème : ${f.probleme}\nSolution : ${f.solution}\nBénéficiaires : ${f.utilisateurs}\nImpact : ${f.impact}\nPriorité : ${f.priorite}\n${f.remarques?'Remarques : '+f.remarques:''}`;
+  navigator.clipboard.writeText(t).then(()=>{
+    const btns=document.querySelectorAll('.fab.cp');
+    btns.forEach(b=>{if(b.getAttribute('onclick')?.includes(id)){b.textContent='✓ Copié !';setTimeout(()=>{b.textContent='⎘ Copier';},2000);}});
+  });
+}
+
+// ── LOGIN ──
+function doLogin(){
+  const u=document.getElementById('l-user').value.trim().toLowerCase();
+  const p=document.getElementById('l-pass').value.trim();
+  const err=document.getElementById('lerr');
+  if(u==='monge'&&p==='mdp'){
+    err.style.display='none';
+    document.getElementById('l-user').value='';
+    document.getElementById('l-pass').value='';
+    show('adminscreen');renderAdmin();
+  }else{
+    err.style.display='block';
+  }
+}
+function logout(){
+  show('loginscreen');
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+  document.getElementById('lerr').style.display='none';
+}
+document.getElementById('l-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+// ── ADMIN ──
+function renderAdmin(){
+  const all=db_get();
+  const total=all.length;
+  const sent=all.filter(f=>f.submitted).length;
+  document.getElementById('adm-meta').textContent='TGV Axe Sud-Est · '+total+' fiche(s) collectée(s) · '+sent+' envoyée(s)';
+  const stats=document.getElementById('adm-stats');
+  const prios={crit:0,haut:0,moy:0,exp:0};
+  all.forEach(f=>{
+    if((f.priorite||'').includes('Critique'))prios.crit++;
+    else if((f.priorite||'').includes('Haute'))prios.haut++;
+    else if((f.priorite||'').includes('moyenne'))prios.moy++;
+    else prios.exp++;
+  });
+  stats.innerHTML=`
+    <div class="stat"><div class="stat-n">${total}</div><div class="stat-l">Total fiches</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--mint)">${sent}</div><div class="stat-l">Envoyées</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--rose)">${prios.crit}</div><div class="stat-l">Critiques</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--amber)">${prios.haut}</div><div class="stat-l">Haute prio.</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--sky)">${prios.moy}</div><div class="stat-l">Moy. terme</div></div>
+  `;
+  const grid=document.getElementById('agrid');
+  if(!all.length){grid.innerHTML='<div class="empty"><div style="font-size:3rem;margin-bottom:16px;opacity:.3">📭</div><p>Aucune fiche collectée pour le moment.</p></div>';return;}
+  grid.innerHTML=all.slice().reverse().map(f=>`
+    <div class="acard" style="border-left-color:${pc(f.priorite)}">
+      <div class="acard-top">
+        <div>
+          <div class="acard-ttl">${f.titre||'Sans titre'}</div>
+          <div class="acard-meta">${f.identite} · ${f.service} · ${f.date} · ${f.id}${f.submitted?' · <span style="color:var(--mint)">✓ Envoyée</span>':''}</div>
+        </div>
+        <span class="pbadge" style="background:${pc(f.priorite)}22;color:${pc(f.priorite)};border:1px solid ${pc(f.priorite)}44">${(f.priorite||'—').replace(/[🔴🟠🟡🟢]/gu,'').trim()}</span>
+      </div>
+      <div class="afields">
+        <div><div class="afl">Problème</div>${f.probleme||'—'}</div>
+        <div><div class="afl">Solution IA</div>${f.solution||'—'}</div>
+        <div><div class="afl">Bénéficiaires</div>${f.utilisateurs||'—'}</div>
+        <div><div class="afl">Impact</div>${f.impact||'—'}</div>
+        ${f.remarques?`<div style="grid-column:1/-1"><div class="afl">Remarques</div>${f.remarques}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function exportCSV(){
+  const all=db_get();if(!all.length)return alert('Aucune fiche à exporter.');
+  const h=['ID','Date','Porteur','Service','Titre','Problème','Solution','Bénéficiaires','Impact','Priorité','Remarques','Statut'];
+  const rows=all.map(f=>[f.id,f.date,f.identite,f.service,f.titre,f.probleme,f.solution,f.utilisateurs,f.impact,f.priorite,f.remarques||'',f.submitted?'Envoyée':'En attente'].map(v=>'"'+(v||'').replace(/"/g,'""')+'"').join(','));
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent([h.join(','),...rows].join('\n'));
+  a.download='fiches-ia-sncf-ase-'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+}
+function exportJSON(){
+  const all=db_get();if(!all.length)return alert('Aucune fiche à exporter.');
+  const a=document.createElement('a');
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(all,null,2));
+  a.download='fiches-ia-sncf-ase-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+function clearAll(){
+  if(confirm('Supprimer définitivement toutes les fiches ?')){localStorage.removeItem(DB_KEY);renderAdmin();}
+}
+
+// ── QR ──
+function showQR(){
+  show('qrscreen');
+  const url=window.location.href.split('?')[0];
+  document.getElementById('qrlbl').textContent=url;
+  const qd=document.getElementById('qrcode');qd.innerHTML='';
+  new QRCode(qd,{text:url,width:220,height:220,colorDark:'#080c14',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
+}
+
+// ── KEYBOARD SHORTCUTS ──
+document.addEventListener('keydown',e=>{
+  if((e.key==='q'||e.key==='Q')&&document.getElementById('landing').classList.contains('active'))showQR();
+  if(e.key==='Escape'&&document.getElementById('qrscreen').classList.contains('active')){hideAll();show('landing');}
+});
+document.getElementById('snd').onclick=()=>{const v=inp.value.trim();if(v)handle(v);};
+inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();const v=inp.value.trim();if(v)handle(v);}});
+inp.addEventListener('input',e=>{e.target.style.height='auto';e.target.style.height=Math.min(e.target.scrollHeight,120)+'px';});
+</script>
+</body>
+</html>
